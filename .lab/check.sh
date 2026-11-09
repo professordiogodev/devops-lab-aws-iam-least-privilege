@@ -26,7 +26,16 @@ else
   ok "SUBMISSION.md: all questions answered"
 fi
 
-# 2. Lab-specific checks
+# 2. Tear down proof (mandatory when the lab creates anything)
+if [ -n "${TEARDOWN_MARKER:-}" ]; then
+  if grep -qE "^${TEARDOWN_MARKER} \(" SUBMISSION.md 2>/dev/null; then
+    ok "Tear down: proof found ($TEARDOWN_MARKER)"
+  else
+    bad "Tear down: SUBMISSION.md must contain the pasted output of the teardown proof (a line starting with '$TEARDOWN_MARKER (')"
+  fi
+fi
+
+# 3. Lab-specific checks
 if [ -f .lab/lab-check.sh ]; then
   say ""
   say "### Lab-specific checks"

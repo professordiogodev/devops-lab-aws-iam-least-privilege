@@ -35,3 +35,9 @@ Answer in your own words. Where a question asks for output, paste it in a code b
 **Your answer:**
 
 <!-- replace this line with your answer -->
+
+### Q6. **Tear down.** Paste the output of `./teardown-check.sh`. It must end with **TEARDOWN VERIFIED**.
+
+**Your answer:**
+
+<!-- replace this line with your answer -->
