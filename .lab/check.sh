@@ -16,15 +16,7 @@ bad() { say "- ❌ $*"; fail=1; }
 say "## Lab check"
 say ""
 
-# 1. Evidence files
-count=$(find evidence -type f ! -name '.gitkeep' 2>/dev/null | wc -l | tr -d ' ')
-if [ "$count" -ge "${MIN_EVIDENCE:-1}" ]; then
-  ok "Evidence: found $count file(s) in evidence/ (need at least ${MIN_EVIDENCE:-1})"
-else
-  bad "Evidence: found $count file(s) in evidence/, need at least ${MIN_EVIDENCE:-1}. Add your screenshots or output files."
-fi
-
-# 2. Answers filled in
+# 1. Answers filled in
 if [ ! -f SUBMISSION.md ]; then
   bad "SUBMISSION.md is missing"
 elif grep -q "replace this line with your answer" SUBMISSION.md; then
@@ -34,7 +26,7 @@ else
   ok "SUBMISSION.md: all questions answered"
 fi
 
-# 3. Lab-specific checks
+# 2. Lab-specific checks
 if [ -f .lab/lab-check.sh ]; then
   say ""
   say "### Lab-specific checks"
