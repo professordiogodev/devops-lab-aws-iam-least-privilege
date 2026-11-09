@@ -24,7 +24,7 @@ Answer in your own words. Where a question asks for output, paste it in a code b
 
 <!-- replace this line with your answer -->
 
-### Q4. What does `arn:aws:s3:::clipstr-uploads-XXXX/*` mean, and what changes if you replace it with `*`? Name one realistic bad outcome of using `"Resource": "*"` for S3 actions.
+### Q4. What does `arn:aws:s3:::clippy-uploads-XXXX/*` mean, and what changes if you replace it with `*`? Name one realistic bad outcome of using `"Resource": "*"` for S3 actions.
 
 **Your answer:**
 

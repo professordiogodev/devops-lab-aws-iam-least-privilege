@@ -24,7 +24,7 @@
 
 <p align="center"><img src="assets/gifs/situation.gif" width="300" alt=""></p>
 
-It is Monday, 09:10. Clipstr, a four-person URL-shortener startup, has an investor due-diligence call on Friday. The investors' security consultant has already sent a message: *"Everyone at Clipstr logs in with the same AWS account, and the password is on a sticky note. Fix identity before Friday or we pause the deal."*
+It is Monday, 09:10. Clippy, a four-person URL-shortener startup, has an investor due-diligence call on Friday. The investors' security consultant has already sent a message: *"Everyone at Clippy logs in with the same AWS account, and the password is on a sticky note. Fix identity before Friday or we pause the deal."*
 
 Then it gets worse. Sam, the new intern, starts today and needs to work on the app. The CTO's instruction: *"Give Sam access to what Sam needs. Not a click more."*
 
@@ -53,7 +53,7 @@ Before changing anything, look at the account like an auditor would.
 1. Open the **IAM** service. On the **Dashboard**, find the **Security recommendations** card.
 2. Open **Users** and **User groups**. How many exist? Who is the only identity in this account right now?
 3. Note the **Account ID** (top right, under your name). Write it down, you will need it.
-4. Find **Account alias** on the dashboard (right-hand side). Create an alias such as `clipstr-<your-initials>`. Look at the **sign-in URL** for IAM users that appears. It uses the alias instead of the 12-digit ID.
+4. Find **Account alias** on the dashboard (right-hand side). Create an alias such as `clippy-<your-initials>`. Look at the **sign-in URL** for IAM users that appears. It uses the alias instead of the 12-digit ID.
 
 > [!NOTE]
 > **Think**
@@ -70,16 +70,16 @@ IAM only matters if there is something worth protecting. Create two S3 buckets (
 
 | Bucket | Purpose |
 |--------|---------|
-| `clipstr-uploads-<initials>-<4 digits>` | The bucket developers are allowed to use |
-| `clipstr-finance-<initials>-<4 digits>` | Private finance exports, developers must NOT touch these |
+| `clippy-uploads-<initials>-<4 digits>` | The bucket developers are allowed to use |
+| `clippy-finance-<initials>-<4 digits>` | Private finance exports, developers must NOT touch these |
 
 Upload any small file to each.
 
 ### 2.2 The developer group
 
-Create the user group `Clipstr-Developers` (IAM -> User groups). Do not attach anything yet.
+Create the user group `Clippy-Developers` (IAM -> User groups). Do not attach anything yet.
 
-### 2.3 The policy: what does a Clipstr developer need?
+### 2.3 The policy: what does a Clippy developer need?
 
 Developers need exactly this, and nothing else:
 
@@ -87,10 +87,10 @@ Developers need exactly this, and nothing else:
 |------|---------|
 | See servers | List and describe EC2 resources (read-only) |
 | Use the uploads bucket | List the bucket; get, put and delete objects in it. **Only that bucket** |
-| Read app secrets | Get and describe secrets whose name starts with `clipstr/` |
+| Read app secrets | Get and describe secrets whose name starts with `clippy/` |
 | Write logs and metrics | Basic CloudWatch Logs and `PutMetricData` |
 
-Create the policy **`ClipstrDeveloperPolicy`** (IAM -> Policies -> Create policy):
+Create the policy **`ClippyDeveloperPolicy`** (IAM -> Policies -> Create policy):
 
 1. Start in the **Visual** editor. For each row of the table add a statement: pick the service, pick actions from the lists (use the access-level groups, such as *List* and *Read*, to find them), and set resources. Notice how the visual editor lets you choose **specific ARNs** instead of `*`.
 2. Switch to the **JSON** tab and read what the visual editor generated. Each statement has an `Effect`, `Action` and `Resource`.
@@ -110,13 +110,13 @@ Create the policy **`ClipstrDeveloperPolicy`** (IAM -> Policies -> Create policy
 >     { "Sid": "SeeServers", "Effect": "Allow", "Action": ["ec2:Describe*"], "Resource": "*" },
 >     { "Sid": "OneBucketOnly", "Effect": "Allow",
 >       "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
->       "Resource": "arn:aws:s3:::clipstr-uploads-XXXX" },
+>       "Resource": "arn:aws:s3:::clippy-uploads-XXXX" },
 >     { "Sid": "ObjectsInThatBucket", "Effect": "Allow",
 >       "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
->       "Resource": "arn:aws:s3:::clipstr-uploads-XXXX/*" },
->     { "Sid": "ClipstrSecretsOnly", "Effect": "Allow",
+>       "Resource": "arn:aws:s3:::clippy-uploads-XXXX/*" },
+>     { "Sid": "ClippySecretsOnly", "Effect": "Allow",
 >       "Action": ["secretsmanager:GetSecretValue", "secretsmanager:DescribeSecret"],
->       "Resource": "arn:aws:secretsmanager:*:*:secret:clipstr/*" },
+>       "Resource": "arn:aws:secretsmanager:*:*:secret:clippy/*" },
 >     { "Sid": "LogsAndMetrics", "Effect": "Allow",
 >       "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents", "cloudwatch:PutMetricData"],
 >       "Resource": "*" }
@@ -124,7 +124,7 @@ Create the policy **`ClipstrDeveloperPolicy`** (IAM -> Policies -> Create policy
 > }
 > ```
 
-Save the policy, then attach it to the group (**User groups -> Clipstr-Developers -> Permissions -> Add permissions**).
+Save the policy, then attach it to the group (**User groups -> Clippy-Developers -> Permissions -> Add permissions**).
 
 ### 2.4 Meet Sam
 
@@ -132,8 +132,8 @@ Create the user `sam-intern` (IAM -> Users -> Create user):
 
 - Tick **Provide user access to the AWS Management Console** -> **I want to create an IAM user**
 - Choose a custom password and untick *Users must create a new password at next sign-in* (to save you time in this lab)
-- On the permissions step choose **Add user to group** -> `Clipstr-Developers`
-- Add the tags `Project=clipstr` and `Owner=<you>`
+- On the permissions step choose **Add user to group** -> `Clippy-Developers`
+- Add the tags `Project=clippy` and `Owner=<you>`
 
 > [!TIP]
 > **Checkpoint:** open **Users -> sam-intern -> Permissions**. You should see the policy coming from the **group**, not attached directly. Why is that the recommended pattern?
@@ -154,7 +154,7 @@ A policy that looks right on paper can still be wrong. Test it for real.
 | 1 | Open **EC2 -> Instances** |
 | 2 | Click **Launch instances** and try to launch any instance |
 | 3 | Open S3 in the console. What does the bucket list page say? |
-| 4 | Open your **uploads** bucket directly by pasting this URL (use your bucket name and Region): `https://s3.console.aws.amazon.com/s3/buckets/clipstr-uploads-XXXX` |
+| 4 | Open your **uploads** bucket directly by pasting this URL (use your bucket name and Region): `https://s3.console.aws.amazon.com/s3/buckets/clippy-uploads-XXXX` |
 | 5 | Upload a new file to the uploads bucket, then download it |
 | 6 | Try to open the **finance** bucket the same way |
 | 7 | Open **IAM -> Users** |
@@ -217,7 +217,7 @@ Resources left behind cost money, keep doors open and pollute the next lab. Remo
 
 Do this **last**, after you have pasted your `verify` output into `SUBMISSION.md` (once you tear down, the lab can no longer be verified).
 
-1. In the console, delete in this order: **the user** `sam-intern` (access keys first), **the group** `Clipstr-Developers`, **the policy** `ClipstrDeveloperPolicy`, then **empty and delete** both S3 buckets. Keep the account alias.
+1. In the console, delete in this order: **the user** `sam-intern` (access keys first), **the group** `Clippy-Developers`, **the policy** `ClippyDeveloperPolicy`, then **empty and delete** both S3 buckets. Keep the account alias.
 2. Run the check with your **admin** credentials (not Sam's), in a terminal with the AWS CLI or in AWS CloudShell.
 
 Then run the proof:
@@ -239,7 +239,7 @@ Answer the questions in `SUBMISSION.md` in **your fork** (paste output in code b
 1. Paste your 7-row table from the "become Sam" part: action, your prediction, what actually happened.
 2. Paste the full AccessDenied error Sam got when launching an instance. Which part tells you *why* the action was denied? Rewrite it in your own words.
 3. In CloudTrail Event history, find the denied `RunInstances` event. Paste its `eventName`, `errorCode`, `errorMessage` and `userIdentity.userName`.
-4. What does `arn:aws:s3:::clipstr-uploads-XXXX/*` mean, and what changes if you replace it with `*`? Name one realistic bad outcome of using `"Resource": "*"` for S3 actions.
+4. What does `arn:aws:s3:::clippy-uploads-XXXX/*` mean, and what changes if you replace it with `*`? Name one realistic bad outcome of using `"Resource": "*"` for S3 actions.
 5. You found Sam's leaked key at 14:05. List, in order, the first four things you would do and explain why you deactivate before you delete.
 6. **Tear down.** Paste the output of `./teardown-check.sh`. It must end with **TEARDOWN VERIFIED**.
 <!-- submission:end -->

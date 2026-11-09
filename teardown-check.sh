@@ -14,10 +14,10 @@ no_buckets_with_prefix() { [ -z "$(aws s3api list-buckets --query "Buckets[?star
 no_budget() { ! aws budgets describe-budget --account-id "$ACCOUNT" --budget-name "$1" >/dev/null 2>&1; }
 
 check "IAM user sam-intern is deleted" no_user sam-intern
-check "IAM group Clipstr-Developers is deleted" no_group Clipstr-Developers
-check "customer managed policy ClipstrDeveloperPolicy is deleted" no_policy ClipstrDeveloperPolicy
-check "no S3 bucket named clipstr-uploads-* is left" no_buckets_with_prefix clipstr-uploads-
-check "no S3 bucket named clipstr-finance-* is left" no_buckets_with_prefix clipstr-finance-
+check "IAM group Clippy-Developers is deleted" no_group Clippy-Developers
+check "customer managed policy ClippyDeveloperPolicy is deleted" no_policy ClippyDeveloperPolicy
+check "no S3 bucket named clippy-uploads-* is left" no_buckets_with_prefix clippy-uploads-
+check "no S3 bucket named clippy-finance-* is left" no_buckets_with_prefix clippy-finance-
 
 echo
 if [ "$failn" -eq 0 ]; then echo "TEARDOWN VERIFIED ($pass/$pass) in account $ACCOUNT"; else echo "NOT CLEAN: $failn leftover(s). Delete them (console or CLI) and run this again."; fi
