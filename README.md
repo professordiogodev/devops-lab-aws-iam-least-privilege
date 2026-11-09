@@ -1,6 +1,4 @@
-# IAM Users & Least Privilege
-
-An intern, a leaked key and an investor audit. Build least-privilege access, then attack it as the intern.
+<p align="center"><img src="assets/banner.svg" alt="IAM Users & Least Privilege" width="100%"></p>
 
 | | |
 |-|-|
@@ -17,9 +15,10 @@ An intern, a leaked key and an investor audit. Build least-privilege access, the
 5. Commit and push. Open the **Actions** tab of your fork (click *I understand my workflows, go ahead and enable them* the first time). The **Lab check** shows what is still missing.
 6. When the check is green, **submit the URL of your fork** in the course platform.
 
+> [!NOTE]
 > The check only looks at your answers and any files the lab asks you to commit. Your instructor reads your work and may ask you to explain any line.
 
----
+<p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
 ## The situation
 
@@ -29,6 +28,7 @@ Then it gets worse. Sam, the new intern, starts today and needs to work on the a
 
 You are the DevOps engineer. You will set up identity properly, then **attack your own work** as Sam to prove it holds.
 
+> [!IMPORTANT]
 > **Your mission**
 > - Check how healthy the account's identity setup is today
 > - Build a group and a **least-privilege** policy for developers
@@ -40,7 +40,7 @@ You are the DevOps engineer. You will set up identity properly, then **attack yo
 
 > Check the **Region** shown at the top right of the console. IAM is global, but the S3 buckets you create will live in the Region you pick. Use the same Region for the whole week.
 
----
+<p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
 ## Part 1 - Recon: how bad is it?
 
@@ -51,11 +51,12 @@ Before changing anything, look at the account like an auditor would.
 3. Note the **Account ID** (top right, under your name). Write it down, you will need it.
 4. Find **Account alias** on the dashboard (right-hand side). Create an alias such as `clipstr-<your-initials>`. Look at the **sign-in URL** for IAM users that appears. It uses the alias instead of the 12-digit ID.
 
+> [!NOTE]
 > **Think**
 > - What does the dashboard say about **MFA on the root user** and **root access keys**? Why do these two checks matter more than any other?
 > - If you are logged in as an IAM user or SSO role today, why is that already better than using the root user for daily work?
 
----
+<p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
 ## Part 2 - Build: a group, a policy, two buckets
 
@@ -91,9 +92,11 @@ Create the policy **`ClipstrDeveloperPolicy`** (IAM -> Policies -> Create policy
 2. Switch to the **JSON** tab and read what the visual editor generated. Each statement has an `Effect`, `Action` and `Resource`.
 3. Look at the validation tabs at the bottom of the JSON editor (**Security**, **Errors**, **Warnings**, **Suggestions**). Read whatever it shows.
 
+> [!NOTE]
 > **Predict**
 > Edit one statement in the JSON editor so `"Resource"` is `"*"` instead of your bucket ARN, but do not save. What do you expect to change in the validation panel? Look, and write down what happened. Then undo your change.
 
+> [!TIP]
 > **Stuck?** Reference policy (replace the bucket name with yours). Compare it with your own. Differences are fine as long as you can explain them:
 >
 > ```json
@@ -128,9 +131,10 @@ Create the user `sam-intern` (IAM -> Users -> Create user):
 - On the permissions step choose **Add user to group** -> `Clipstr-Developers`
 - Add the tags `Project=clipstr` and `Owner=<you>`
 
+> [!TIP]
 > **Checkpoint:** open **Users -> sam-intern -> Permissions**. You should see the policy coming from the **group**, not attached directly. Why is that the recommended pattern?
 
----
+<p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
 ## Part 3 - Prove it: become Sam
 
@@ -149,16 +153,18 @@ A policy that looks right on paper can still be wrong. Test it for real.
 | 6 | Try to open the **finance** bucket the same way |
 | 7 | Open **IAM -> Users** |
 
+> [!WARNING]
 > **Break it**
 > Read the full red error text in experiment 2 and in experiment 6. They tell you exactly **who** was denied, **which action**, on **which resource** and **why**. Find the sentence that says which kind of policy was missing.
 
+> [!NOTE]
 > **Think**
 > - Experiment 3: why can Sam use the uploads bucket but not even *list* all buckets? What single action would you have to add to fix the bucket list, and what would that leak?
 > - Does making the console "feel nice" ever conflict with least privilege? Where would you draw the line?
 
 Stay signed in as Sam in this window for Part 5.
 
----
+<p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
 ## Part 4 - The leaked key drill
 
@@ -170,7 +176,7 @@ Back in your **admin** window. At 14:05 your phone buzzes: *"GitHub Secret Scann
 4. Open **Users -> sam-intern -> Last accessed** (the Access Advisor tab). Which services has Sam actually used? What would you do with this list when tightening a policy?
 5. Delete the key.
 
----
+<p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
 ## Part 5 - Investigate: what did Sam do?
 
@@ -185,9 +191,10 @@ The investors will ask: *"Can you prove who did what?"* The answer lives in **Cl
 
 > Events can take **5-15 minutes** to appear. If the list is empty, carry on with the next section and come back.
 
+> [!NOTE]
 > **Think** CloudTrail Event history only keeps 90 days and only management events. What would you configure to keep logs for a year, and where should they be stored so even an administrator cannot quietly delete them?
 
----
+<p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
 ## Level up (optional)
 
