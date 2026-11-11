@@ -2,11 +2,19 @@
 
 ## The situation
 
-It is Monday, 09:10. Clippy, a four-person URL-shortener startup, has an investor due-diligence call on Friday. The investors' security consultant has already sent a message: *"Everyone at Clippy logs in with the same AWS account, and the password is on a sticky note. Fix identity before Friday or we pause the deal."*
+```text
+CASE FILE 0417 - "One login, four people"
+Client      : Clippy, a four-person URL-shortener startup
+Complaint   : the investors' security consultant, three days before the due-diligence call
+Evidence A  : everybody logs in to the same AWS account with the same password
+Evidence B  : the password is written on a sticky note on the CTO's monitor
+Deadline    : Friday. "Fix identity before then, or we pause the deal."
+Investigator: you
+```
 
-Then it gets worse. Sam, the new intern, starts today and needs to work on the app. The CTO's instruction: *"Give Sam access to what Sam needs. Not a click more."*
+It is Monday morning and the case is yours. It gets worse at 09:10: Sam, the new intern, starts today and needs to work on the app. The CTO's instruction is short: *"Give Sam access to what Sam needs. Not a click more."*
 
-You are the DevOps engineer. You will set up identity properly, then **attack your own work** as Sam to prove it holds.
+You will fix identity properly, and then **attack your own work** as Sam, because a policy that looks right on paper is only a theory. Along the way you will meet two more exhibits: a leaked access key, and the audit trail that shows who did what.
 
 > **Your mission**
 > - Check how healthy the account's identity setup is today
@@ -21,7 +29,7 @@ You are the DevOps engineer. You will set up identity properly, then **attack yo
 
 ---
 
-## Part 1 - Recon: how bad is it?
+## Part 1 - Recon: how bad is the scene?
 
 Before changing anything, look at the account like an auditor would.
 
@@ -139,7 +147,7 @@ Stay signed in as Sam in this window for Part 5.
 
 ---
 
-## Part 4 - The leaked key drill
+## Part 4 - Exhibit B: the leaked key
 
 Back in your **admin** window. At 14:05 your phone buzzes: *"GitHub Secret Scanning: an AWS access key was found in a public repository."* Sam pushed `.env` to GitHub.
 
@@ -151,7 +159,7 @@ Back in your **admin** window. At 14:05 your phone buzzes: *"GitHub Secret Scann
 
 ---
 
-## Part 5 - Investigate: what did Sam do?
+## Part 5 - Exhibit C: what did Sam do?
 
 The investors will ask: *"Can you prove who did what?"* The answer lives in **CloudTrail**.
 

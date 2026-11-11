@@ -22,13 +22,21 @@
 
 ## 🎬 The situation
 
-<p align="center"><img src="assets/gifs/situation.gif" width="300" alt="Animation: key leaked"></p>
+<p align="center"><img src="assets/gifs/situation.gif" width="300" alt="A policy with Action star and Resource star lets a leaked key delete, start and read everything; the narrowed policy allows only reading the receipts bucket"></p>
 
-It is Monday, 09:10. Clippy, a four-person URL-shortener startup, has an investor due-diligence call on Friday. The investors' security consultant has already sent a message: *"Everyone at Clippy logs in with the same AWS account, and the password is on a sticky note. Fix identity before Friday or we pause the deal."*
+```text
+CASE FILE 0417 - "One login, four people"
+Client      : Clippy, a four-person URL-shortener startup
+Complaint   : the investors' security consultant, three days before the due-diligence call
+Evidence A  : everybody logs in to the same AWS account with the same password
+Evidence B  : the password is written on a sticky note on the CTO's monitor
+Deadline    : Friday. "Fix identity before then, or we pause the deal."
+Investigator: you
+```
 
-Then it gets worse. Sam, the new intern, starts today and needs to work on the app. The CTO's instruction: *"Give Sam access to what Sam needs. Not a click more."*
+It is Monday morning and the case is yours. It gets worse at 09:10: Sam, the new intern, starts today and needs to work on the app. The CTO's instruction is short: *"Give Sam access to what Sam needs. Not a click more."*
 
-You are the DevOps engineer. You will set up identity properly, then **attack your own work** as Sam to prove it holds.
+You will fix identity properly, and then **attack your own work** as Sam, because a policy that looks right on paper is only a theory. Along the way you will meet two more exhibits: a leaked access key, and the audit trail that shows who did what.
 
 > [!IMPORTANT]
 > **Your mission**
@@ -44,9 +52,9 @@ You are the DevOps engineer. You will set up identity properly, then **attack yo
 
 <p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
-## Part 1 - Recon: how bad is it?
+## Part 1 - Recon: how bad is the scene?
 
-<p align="center"><img src="assets/gifs/recon.gif" width="300" alt="Animation: IAM &gt; Dashboard"></p>
+<p align="center"><img src="assets/gifs/recon.gif" width="300" alt="A cloud with servers below it, like the IAM dashboard you audit before changing anything"></p>
 
 Before changing anything, look at the account like an auditor would.
 
@@ -142,7 +150,7 @@ Create the user `sam-intern` (IAM -> Users -> Create user):
 
 ## Part 3 - Prove it: become Sam
 
-<p align="center"><img src="assets/gifs/verify.gif" width="300" alt="A terminal running the lab&#x27;s verify script and printing PASS lines, ending with ALL CHECKS PASSED"></p>
+<p align="center"><img src="assets/gifs/verify.gif" width="300" alt="A terminal running the verifier and printing PASS lines"></p>
 
 A policy that looks right on paper can still be wrong. Test it for real.
 
@@ -172,7 +180,7 @@ Stay signed in as Sam in this window for Part 5.
 
 <p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
-## Part 4 - The leaked key drill
+## Part 4 - Exhibit B: the leaked key
 
 Back in your **admin** window. At 14:05 your phone buzzes: *"GitHub Secret Scanning: an AWS access key was found in a public repository."* Sam pushed `.env` to GitHub.
 
@@ -184,7 +192,7 @@ Back in your **admin** window. At 14:05 your phone buzzes: *"GitHub Secret Scann
 
 <p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
-## Part 5 - Investigate: what did Sam do?
+## Part 5 - Exhibit C: what did Sam do?
 
 The investors will ask: *"Can you prove who did what?"* The answer lives in **CloudTrail**.
 
